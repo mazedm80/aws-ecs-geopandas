@@ -13,14 +13,18 @@ import geopandas as gpd
 from botocore.exceptions import ClientError
 from geopandas import GeoDataFrame
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
 def download_file(url: str, output_dir: str, filename: str) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    logger.info("Downloading %s to %s", url, os.path.join(output_dir, filename))
+    logger.info(
+        "Downloading %s to %s", url, os.path.join(output_dir, filename)
+    )
     try:
         response = requests.get(url, timeout=30)
         response.raise_for_status()
@@ -36,7 +40,7 @@ def upload_file_to_s3(file_name, bucket, object_name=None):
         object_name = os.path.basename(file_name)
 
     # Upload the file
-    s3_client = boto3.client('s3')
+    s3_client = boto3.client("s3")
     try:
         s3_client.upload_file(file_name, bucket, object_name)
     except ClientError as e:
@@ -67,12 +71,16 @@ def compute_centroid_column(
     return gdf
 
 
-def keep_and_rename(gdf: GeoDataFrame, centroid_col: str = "centroid") -> GeoDataFrame:
+def keep_and_rename(
+    gdf: GeoDataFrame, centroid_col: str = "centroid"
+) -> GeoDataFrame:
     # keep only the columns we want
     keep = ["NAME_4", centroid_col]
     gdf = gdf[keep].copy()
     # rename common names and set centroid as active geometry if desired
-    gdf.rename(columns={"NAME_4": "town", centroid_col: "geometry"}, inplace=True)
+    gdf.rename(
+        columns={"NAME_4": "town", centroid_col: "geometry"}, inplace=True
+    )
     gdf = gdf.set_geometry("geometry")
     return gdf
 
@@ -112,7 +120,9 @@ def export_as_geoparquet(gdf: GeoDataFrame, output_path: str) -> None:
 def main():
     DATA_DIR = os.environ.get("DATA_DIR", "./data/")
     GADM_FILE_NAME = os.environ.get("GADM_FILE_NAME", "gadm41_DEU_4.json")
-    RASTER_FILE_NAME = os.environ.get("RASTER_FILE_NAME", "DEU_wind-speed_10m.tif")
+    RASTER_FILE_NAME = os.environ.get(
+        "RASTER_FILE_NAME", "DEU_wind-speed_10m.tif"
+    )
     BUCKET_NAME = os.environ.get("BUCKET_NAME")
 
     download_file(
@@ -138,9 +148,15 @@ def main():
         if BUCKET_NAME:
             output_file = os.path.join(DATA_DIR, "output/wind_speed.parquet")
             if upload_file_to_s3(output_file, BUCKET_NAME):
-                logger.info("Uploaded %s to S3 bucket %s", output_file, BUCKET_NAME)
+                logger.info(
+                    "Uploaded %s to S3 bucket %s", output_file, BUCKET_NAME
+                )
             else:
-                logger.error("Failed to upload %s to S3 bucket %s", output_file, BUCKET_NAME)
+                logger.error(
+                    "Failed to upload %s to S3 bucket %s",
+                    output_file,
+                    BUCKET_NAME,
+                )
     except Exception as e:
         logger.exception("An error occurred: %s", e)
         sys.exit(1)
