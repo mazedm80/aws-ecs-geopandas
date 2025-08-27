@@ -1,5 +1,5 @@
-resource "aws_ecr_repository" "ecs-geospatial-demo" {
-    name                 = "ecs-geospatial-demo-${var.env}"
+resource "aws_ecr_repository" "geopandas-demo" {
+    name                 = "geopandas-demo-${var.env}"
     image_tag_mutability = "MUTABLE"
     encryption_configuration {
     encryption_type = "AES256"
@@ -8,13 +8,13 @@ resource "aws_ecr_repository" "ecs-geospatial-demo" {
     scan_on_push = true
     }
     tags = {
-        name = "ECS Demo-${var.env}"
+        name = "Geopandas Demo-${var.env}"
         environment = var.env
     }
 }
 
 resource "aws_ecr_lifecycle_policy" "example" {
-  repository = aws_ecr_repository.ecs-geospatial-demo.name
+  repository = aws_ecr_repository.geopandas-demo.name
 
   policy = <<EOF
 {
