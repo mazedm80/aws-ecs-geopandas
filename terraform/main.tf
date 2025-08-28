@@ -27,6 +27,17 @@ module "iam" {
   env        = var.env
 }
 
+module "ecs" {
+  source     = "./modules/ecs"
+  env        = var.env
+  bucket_arn = module.s3.bucket_arn
+  bucket_name = module.s3.bucket_name
+  aws_region = var.aws_region
+  container_name = module.ecr.container_name
+  container_url = module.ecr.container_url
+  ecs_depends_on = [ module.ecr ]
+}
+
 output "ecr_user_access_key_id" {
   value = module.iam.ecr_user_access_key_id
   sensitive = true

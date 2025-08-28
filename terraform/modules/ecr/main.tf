@@ -41,3 +41,11 @@ variable "env" {
     description = "Deployment environment"
     type        = string
 }
+
+output "container_name" {
+  value = aws_ecr_repository.geopandas-demo.name
+}
+
+output "container_url" {
+  value = aws_ecr_repository.geopandas-demo.repository_url
+}
