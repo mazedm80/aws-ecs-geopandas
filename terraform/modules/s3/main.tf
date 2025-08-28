@@ -19,5 +19,9 @@ variable "env" {
 }
 
 output "bucket_arn" {
-  value = aws_s3_bucket.ecs-demo.arn
+    value = aws_s3_bucket.ecs-demo.arn
+}
+
+output "bucket_name" {
+    value = aws_s3_bucket.ecs-demo.bucket
 }

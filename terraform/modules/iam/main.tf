@@ -27,7 +27,11 @@ data "aws_iam_policy_document" "ecr-user" {
         "ecr:GetLifecyclePolicy",
         "ecr:GetLifecyclePolicyPreview",
         "ecr:ListTagsForResource",
-        "ecr:DescribeImageScanFindings"
+        "ecr:DescribeImageScanFindings",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload",
+        "ecr:PutImage"
     ]
     resources = ["*"]
   }
