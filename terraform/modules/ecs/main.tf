@@ -81,3 +81,11 @@ variable "container_url" {
     description = "URL of the container"
     type        = string
 }
+
+output "ecs_cluster_arn" {
+  value = aws_ecs_cluster.geopandas_demo.arn
+}
+
+output "ecs_task_definition_arn" {
+  value = aws_ecs_task_definition.service.arn
+}
