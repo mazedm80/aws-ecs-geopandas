@@ -31,7 +31,7 @@ resource "aws_scheduler_schedule" "geopandas_demo" {
       network_configuration {
         subnets          = data.aws_subnets.current.ids
         security_groups  = [data.aws_security_group.current.id]
-        assign_public_ip = false
+        assign_public_ip = true
       }
     }
   }
