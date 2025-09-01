@@ -13,37 +13,45 @@ provider "aws" {
 }
 
 module "s3" {
-  source     = "./modules/s3"
-  env        = var.env
+  source = "./modules/s3"
+  env    = var.env
 }
 
 module "ecr" {
-  source     = "./modules/ecr"
-  env        = var.env
+  source = "./modules/ecr"
+  env    = var.env
 }
 
 module "iam" {
-  source     = "./modules/iam"
-  env        = var.env
+  source = "./modules/iam"
+  env    = var.env
 }
 
 module "ecs" {
-  source     = "./modules/ecs"
-  env        = var.env
-  bucket_arn = module.s3.bucket_arn
-  bucket_name = module.s3.bucket_name
-  aws_region = var.aws_region
+  source         = "./modules/ecs"
+  env            = var.env
+  bucket_arn     = module.s3.bucket_arn
+  bucket_name    = module.s3.bucket_name
+  aws_region     = var.aws_region
   container_name = module.ecr.container_name
-  container_url = module.ecr.container_url
-  ecs_depends_on = [ module.ecr ]
+  container_url  = module.ecr.container_url
+  ecs_depends_on = [module.ecr]
+}
+
+module "eventbridge" {
+  source                  = "./modules/eventbridge"
+  env                     = var.env
+  ecs_cluster_arn         = module.ecs.ecs_cluster_arn
+  ecs_task_definition_arn = module.ecs.ecs_task_definition_arn
+  event_bridge_depends_on = [module.ecs]
 }
 
 output "ecr_user_access_key_id" {
-  value = module.iam.ecr_user_access_key_id
+  value     = module.iam.ecr_user_access_key_id
   sensitive = true
 }
 
 output "ecr_user_secret_access_key" {
-  value = module.iam.ecr_user_secret_access_key
+  value     = module.iam.ecr_user_secret_access_key
   sensitive = true
 }
